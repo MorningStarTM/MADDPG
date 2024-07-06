@@ -54,4 +54,26 @@ class MultiAgentReplayBuffer:
         self.mem_cntr += 1
 
 
-        
+    def sample_buffer(self):
+        max_mem = min(self.mem_cntr, self.mem_size)
+
+        batch = np.random.choice(max_mem, self.batch_size, replace=False)
+
+        states = self.state_memory[batch]
+        rewards = self.reward_memory[batch]
+        states_ = self.new_state_memory[batch]
+        terminal = self.terminal_memory[batch]
+
+        actor_states = []
+        actor_new_states = []
+        actions = []
+
+
+        for agent_idx in range(self.n_agents):
+            actor_states.append(self.actor_state_memory[agent_idx][batch])
+            actor_new_states.append(self.actor_new_state_memory[agent_idx][batch])
+            actions.append(self.actor_action_memory[agent_idx][batch])
+
+        return actor_states, states, actions, rewards, actor_new_states, states_, terminal
+
+
