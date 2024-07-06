@@ -204,15 +204,32 @@ class Agent:
         self.target_actor.save_checkpoint()
         self.critic.save_checkpoint()
         self.target_critic.save_checkpoint()
-        print("Models are saved")
 
     def load_models(self):
         self.actor.load_checkpoint()
         self.target_actor.load_checkpoint()
         self.critic.load_checkpoint()
         self.target_critic.load_checkpoint()
-        print("Models are loaded")
 
-        
+
     
 
+class MADDPG:
+    def __init__(self, actor_dims, critic_dims, n_agents, n_actions, scenario='simple', alpha=0.01, beta=0.01, fc1=64, fc2=64, gamma=0.99, tau=0.01, chkpt_dir='artifact/maddpg'):
+        self.agents = []
+        self.n_agents = n_agents
+        self.n_actions = n_actions
+        chkpt_dir += scenario
+
+        for agent_idx  in range(self.n_agents):
+            self.agents.append(Agent(actor_dims[agent_idx], critic_dims, n_actions, agent_idx, alpha=alpha, beta=beta, chkpt_dir=chkpt_dir))
+        
+    def save_checkpoint(self):
+        print("... saving checkpoint....")
+        for agent in self.agents:
+            agent.save_models()
+
+    def load_checkpoint(self):
+        print('... loading checkpoint ....')
+        for agent in self.agents:
+            agent.load_models()
