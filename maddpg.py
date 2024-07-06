@@ -189,3 +189,15 @@ class Agent:
         for name in critic_state_dict:
             critic_state_dict[name] = tau * critic_state_dict[name].clone() + (1-tau) * target_critic_state_dict[name].clone()
         self.target_critic.load_state_dict(critic_state_dict)
+
+    
+    def choose_action(self, observation):
+        state = torch.tensor([observation], dtype=torch.float).to(self.actor.device)
+        actions = self.actor.forward(state)
+        noise = torch.rand(self.n_actions).to(self.actor.device)
+        action = actions + noise
+
+        return action.detach().cpu().numpy()[0]
+    
+
+    
