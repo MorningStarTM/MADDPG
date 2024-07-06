@@ -233,3 +233,12 @@ class MADDPG:
         print('... loading checkpoint ....')
         for agent in self.agents:
             agent.load_models()
+
+    def choose_action(self, raw_obs):
+        actions = []
+        for agent_idx, agent in enumerate(self.agents):
+            action = agent.choose_action(raw_obs[agent_idx])
+            actions.append(action)
+        return actions
+    
+    
