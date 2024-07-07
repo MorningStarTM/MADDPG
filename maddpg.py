@@ -289,3 +289,11 @@ class MADDPG:
 
             agent.update_network_parameters()
 
+
+def obs_list_to_state_vector(observation):
+    state = np.array([])
+    for obs in observation:
+        state = np.concatenate([state, obs])
+    return state
+
+
